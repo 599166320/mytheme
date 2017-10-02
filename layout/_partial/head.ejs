@@ -1,0 +1,119 @@
+<head>
+    <%- partial('plugins/google-analytics') %>
+    <%- partial('plugins/tajs') %>
+    <%- partial('plugins/baidu') %>
+    <meta charset="utf-8">
+    <% if(theme.google_site_verification){ %>
+    <meta name="google-site-verification" content="<%- theme.google_site_verification%>">
+    <% }%>
+    <% if(theme.canonical){ %>
+    <link rel="canonical" href="<%- (theme.canonical + url_for(page.path)).replace(/index\.html$/, '') %>">
+    <% }%>
+    <%
+        var title = page.title;
+
+        if (is_archive()){
+            title = theme.archives_title || 'Archives';
+
+            if (is_month()){
+            title += ': ' + page.year + '/' + page.month;
+            } else if (is_year()){
+            title += ': ' + page.year;
+            }
+        } else if (is_category()){
+            title = (theme.categories_title || 'Categories') + ': ' + page.category;
+        } else if (is_tag()){
+            title = (theme.tags_title || 'Tags') + ': ' + page.tag;
+        }
+    %>
+    <title><% if (title){ %><%= title %> | <% } %><%= config.title %><% if (config.subtitle){ %> | <%= config.subtitle %><% } %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <% if(theme.color){ %>
+    <meta name="theme-color" content="<%=theme.color%>">
+    <% } %>
+    <%
+        var keyWords = config.keywords;
+        if(page.tags){
+        keyWords = [];
+
+        _.isArray(page.tags) ? ( keyWords = page.tags )
+            : page.tags.each(function(k){
+                keyWords.push(k.name);
+            });
+    }
+    %>
+    <meta name="keywords" content="<%= keyWords %>">
+    <%- open_graph({twitter_id: theme.twitter, google_plus: theme.google_plus, fb_admins: theme.fb_admins, fb_app_id: theme.fb_app_id}) %>
+    <% if ((config.feed) && (config.feed.path.length)) { %>
+        <link rel="alternate" type="application/atom+xml" title="<%= config.title %>" href="<%- url_for(config.feed.path) %>">
+    <% } %>
+    <%- favicon_tag(theme.favicon) %>
+    <link rel="stylesheet" href="<%- url_for(theme_css('/css/style', cache)) %>">
+
+<link rel="stylesheet" href="/css/semantic.css" type="text/css" />
+<link rel="stylesheet" href="/css/zyComment.css" type="text/css" />
+<style type="text/css">
+	#cloud-tie-wrapper label {
+	    font-weight: bold;
+	}
+	#cloud-tie-wrapper a {
+		font-family: Microsoft YaHei;
+	}
+	#articleComment {
+		width: "60%";
+		/*height: 1500px;*/
+		overflow: auto;
+	}
+</style>
+
+    <script>window.lazyScripts=[]</script>
+
+
+    <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="/js/zyComment.js"></script>
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript">
+$(function(){
+var post_toc_links = $(".post-toc-link");
+$.each( post_toc_links, function(index,post_toc_link){
+	post_toc_link = $(post_toc_link);
+	var post_toc_number = post_toc_link.find(".post-toc-number");
+	var post_toc_text = post_toc_link.find(".post-toc-text");
+	//console.log(post_toc_number.text()+" "+post_toc_text.text());
+	$(post_toc_link.attr("href")).text(post_toc_number.text()+" "+post_toc_text.text())
+});
+});
+
+var host = "<%- theme.url%>";//document.location.protocol+"//"+window.location.host;
+function jsonp(url){
+	var script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src = url;
+	var head = document.getElementsByTagName("head")[0];
+	head.insertBefore(script, head.firstChild);
+}
+function add_blog_callBackFun(rs){
+	$("#articleComment").zyComment("setCommentAfter",rs);
+}
+function get_list_blog_commonts_callBackFun(rs){
+	var agoComment = rs;
+	$("#articleComment").zyComment({
+		"width":"355",
+		"height":"33",
+		"agoComment":agoComment,
+		"callback":function(comment){
+			var selfID = comment.selfID;
+			if(typeof selfID == "undefined" ){
+				selfID = 0;
+			}
+			jsonp(host+"/add_blog_jsonp?"+"p_id="+encodeURIComponent("<%- page.path %>")+ "&username="+encodeURIComponent(comment.name)+"&content="+encodeURIComponent(comment.content)+"&email="+encodeURIComponent(comment.email)+"&c_id_replay="+selfID);
+
+		}
+	});
+}
+jsonp(host+"/get_list_blog_commonts?p_id="+encodeURIComponent("<%- page.path %>"));
+</script>
+
+
+
+</head>
