@@ -1,19 +1,19 @@
 {
-  "name": "hexo-theme-material-indigo",
+  "name": "pathto-top",
   "version": "1.6.10",
-  "description": "Material Design theme for Hexo.",
+  "description": "Material Design theme for pathto-top.",
   "keywords": [
-    "hexo",
+    "pathto-top",
     "theme",
     "material design"
   ],
   "author": {
-    "name": "yusen",
-    "email": "634206017@qq.com"
+    "name": "dennis",
+    "email": "dennis52o1314@163.com"
   },
   "license": "MIT",
   "repository": {
-    "url": "git+https://github.com/yscoder/hexo-theme-indigo.git",
+    "url": "git+https://github.com/599166320/pathto-top.git",
     "type": "git"
   }
 }
